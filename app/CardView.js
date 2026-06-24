@@ -242,6 +242,80 @@ function Detail({ item, onClose }) {
   );
 }
 
+/* ---------- 주요 인사이트 3줄 (실데이터 산출) ---------- */
+function Pct({ p }) {
+  if (typeof p !== "number") return <span>—</span>;
+  return (
+    <span className={p > 0 ? "txt-up" : p < 0 ? "txt-down" : ""}>
+      {(p > 0 ? "+" : "") + p.toFixed(2) + "%"}
+    </span>
+  );
+}
+
+function Insights({ indices, stocks, fx }) {
+  const I = indices.filter((i) => typeof i.changePct === "number");
+  const S = stocks.filter((s) => typeof s.changePct === "number");
+
+  if (!I.length || !S.length) {
+    return (
+      <div className="insights">
+        <div className="ins-title">
+          주요 인사이트 <span className="ins-sub">실시간 데이터 기준</span>
+        </div>
+        <div className="ins-line muted">데이터 집계 중…</div>
+      </div>
+    );
+  }
+
+  const byChg = (arr) => [...arr].sort((a, b) => b.changePct - a.changePct);
+  const iS = byChg(I);
+  const bestI = iS[0];
+  const worstI = iS[iS.length - 1];
+  const upI = I.filter((i) => i.changePct > 0).length;
+  const downI = I.filter((i) => i.changePct < 0).length;
+
+  const sS = byChg(S);
+  const gain = sS[0];
+  const lose = sS[sS.length - 1];
+  const upS = S.filter((s) => s.changePct > 0).length;
+
+  const usd = fx.find((f) => f.symbol === "KRW=X" && typeof f.changePct === "number");
+
+  return (
+    <div className="insights">
+      <div className="ins-title">
+        주요 인사이트 <span className="ins-sub">실시간 데이터 기준 · 자동 집계</span>
+      </div>
+      <ol>
+        <li>
+          美 3대 지수 {upI}개 상승·{downI}개 하락 — 최강 <b>{bestI.label}</b> (
+          <Pct p={bestI.changePct} />), 최약 <b>{worstI.label}</b> (
+          <Pct p={worstI.changePct} />)
+        </li>
+        <li>
+          대표 종목 {upS}/{S.length} 상승 — 상승 주도 <b>{gain.symbol}</b> (
+          <Pct p={gain.changePct} />), 최대 낙폭 <b>{lose.symbol}</b> (
+          <Pct p={lose.changePct} />)
+        </li>
+        <li>
+          {usd ? (
+            <>
+              원/달러 <b>{fmtNum(usd.price)}원</b> (<Pct p={usd.changePct} />) —{" "}
+              {usd.changePct > 0
+                ? "달러 강세·원화 약세"
+                : usd.changePct < 0
+                ? "달러 약세·원화 강세"
+                : "보합"}
+            </>
+          ) : (
+            "원/달러 환율 데이터 없음"
+          )}
+        </li>
+      </ol>
+    </div>
+  );
+}
+
 /* ---------- 카드 뷰 ---------- */
 export default function CardView() {
   const [data, setData] = useState(null);
@@ -299,6 +373,8 @@ export default function CardView() {
           {data ? ` · 수신 ${okCount}건${failCount ? ` · 실패 ${failCount}건` : ""}` : ""}
         </span>
       </div>
+
+      {data ? <Insights indices={indices} stocks={stocks} fx={fx} /> : null}
 
       {!data && state === "loading" ? <div className="empty">데이터 불러오는 중…</div> : null}
       {state === "error" && !okCount ? (

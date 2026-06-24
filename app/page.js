@@ -5,7 +5,7 @@ import Heatmap from "./Heatmap";
 import CardView from "./CardView";
 
 export default function Page() {
-  const [view, setView] = useState("heatmap"); // heatmap | card
+  const [view, setView] = useState("card"); // card | heatmap
 
   return (
     <div className="wrap">
@@ -17,16 +17,16 @@ export default function Page() {
         </div>
         <div className="tabs">
           <button
-            className={`tab ${view === "heatmap" ? "active" : ""}`}
-            onClick={() => setView("heatmap")}
-          >
-            히트맵
-          </button>
-          <button
             className={`tab ${view === "card" ? "active" : ""}`}
             onClick={() => setView("card")}
           >
             카드
+          </button>
+          <button
+            className={`tab ${view === "heatmap" ? "active" : ""}`}
+            onClick={() => setView("heatmap")}
+          >
+            히트맵
           </button>
         </div>
       </div>

@@ -163,6 +163,52 @@ body {
   font-weight: 600;
 }
 
+/* ---------- insights ---------- */
+.insights {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 8px;
+  padding: 14px 18px 14px 16px;
+  margin-bottom: 22px;
+}
+.ins-title {
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--green-dim);
+  margin-bottom: 8px;
+}
+.ins-title::before {
+  content: "★ ";
+}
+.ins-sub {
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-left: 4px;
+}
+.insights ol {
+  margin: 0;
+  padding-left: 20px;
+}
+.insights li {
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--text);
+}
+.insights li::marker {
+  color: var(--green-dim);
+  font-weight: 700;
+}
+.insights b {
+  font-weight: 700;
+}
+.insights .ins-line.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 /* ---------- legend ---------- */
 .legend {
   display: flex;
